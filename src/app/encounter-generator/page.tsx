@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import {
   Card,
   CardContent,
@@ -31,7 +32,7 @@ function SubmitButton() {
 }
 
 export default function EncounterGeneratorPage() {
-  const [state, formAction] = useFormState(handleGenerateEncounter, undefined);
+  const [state, formAction] = useActionState(handleGenerateEncounter, undefined);
 
   return (
     <div className="space-y-6">
