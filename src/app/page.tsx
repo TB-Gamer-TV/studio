@@ -26,6 +26,7 @@ import { Plus, Minus, Trash2, BookText } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SpellSlots, getSpellcastingInfo } from "@/components/spell-slots";
 
 
 const stats = [
@@ -109,6 +110,8 @@ export default function CharacterSheetPage() {
   const handleRemoveItem = (id: number) => {
     setInventory(inventory.filter((item) => item.id !== id));
   };
+  
+  const spellcastingInfo = getSpellcastingInfo(characterClass);
 
 
   return (
@@ -209,6 +212,14 @@ export default function CharacterSheetPage() {
             </div>
           </CardContent>
         </Card>
+        
+        {spellcastingInfo.isCaster && (
+          <SpellSlots 
+            maxLevel={spellcastingInfo.maxSpellLevel}
+            isWarlock={spellcastingInfo.isWarlock}
+          />
+        )}
+
 
         <Card className="lg:col-span-2">
           <CardHeader>
@@ -327,5 +338,3 @@ export default function CharacterSheetPage() {
     </div>
   );
 }
-
-    
