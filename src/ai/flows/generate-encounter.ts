@@ -36,13 +36,7 @@ const generateEncounterPrompt = ai.definePrompt({
   output: {schema: GenerateEncounterOutputSchema},
   prompt: `You are a Dungeon Master with 20 years of experience. You are creating a D&D encounter for a party of level {{{level}}} characters. The party size is {{{partySize}}}. The environment is {{{environment}}}.
 
-Create a balanced and challenging encounter appropriate for the party's level, size and environment. Include a description of the encounter, as well as the stat blocks for the enemies involved. The description should include enough detail for the DM to run the encounter.
-
-Description:
-{{description}}
-
-Encounter Stats:
-{{encounterStats}}`,
+Create a balanced and challenging encounter appropriate for the party's level, size and environment. Include a description of the encounter, as well as the stat blocks for the enemies involved. The description should include enough detail for the DM to run the encounter.`,
 });
 
 const generateEncounterFlow = ai.defineFlow(
