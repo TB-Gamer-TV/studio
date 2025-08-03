@@ -15,8 +15,8 @@ const SPELLCASTING_CLASSES: Record<string, { maxSpellLevel: number; isWarlock?: 
   Sorcerer: { maxSpellLevel: 9 },
   Warlock: { maxSpellLevel: 5, isWarlock: true },
   Wizard: { maxSpellLevel: 9 },
-  // Third-casters like Eldritch Knight or Arcane Trickster would have max level 4
-  // For simplicity, we are not handling subclasses here.
+  Fighter: { maxSpellLevel: 4 }, // For Eldritch Knight
+  Rogue: { maxSpellLevel: 4 }, // For Arcane Trickster
 };
 
 export function getSpellcastingInfo(className: string) {
