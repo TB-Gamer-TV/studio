@@ -1,5 +1,8 @@
 'use server';
 
+import { config } from 'dotenv';
+config();
+
 import { generateEncounter } from '@/ai/flows/generate-encounter';
 import { z } from 'zod';
 
