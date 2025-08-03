@@ -1,18 +1,25 @@
 'use client';
 
 import { useState } from 'react';
-import { Dices, Plus, Minus } from 'lucide-react';
+import { Dices } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
 
 const diceTypes = [4, 6, 8, 10, 12, 20, 100];
+
+type RollResult = {
+  roll: string;
+  total: number;
+  rollStatus: 'critical' | 'fumble' | 'normal';
+};
 
 export function DiceRoller() {
   const [numberOfDice, setNumberOfDice] = useState(1);
   const [modifier, setModifier] = useState(0);
-  const [results, setResults] = useState<{ roll: string; total: number }[]>([]);
+  const [results, setResults] = useState<RollResult[]>([]);
   const [isRolling, setIsRolling] = useState(false);
 
   const rollDice = (sides: number) => {
@@ -20,22 +27,35 @@ export function DiceRoller() {
     setResults([]);
 
     setTimeout(() => {
-      let total = 0;
+      let diceSum = 0;
       const rolls = [];
       for (let i = 0; i < numberOfDice; i++) {
         const roll = Math.floor(Math.random() * sides) + 1;
         rolls.push(roll);
-        total += roll;
+        diceSum += roll;
       }
-      total += modifier;
+      const total = diceSum + modifier;
+
+      let rollStatus: RollResult['rollStatus'] = 'normal';
+      if (diceSum === numberOfDice) {
+        rollStatus = 'fumble';
+      } else if (diceSum === numberOfDice * sides) {
+        rollStatus = 'critical';
+      }
 
       const rollString = `${numberOfDice}d${sides} + ${modifier}`;
-      const newResult = { roll: rollString, total };
+      const newResult: RollResult = { roll: rollString, total, rollStatus };
       
       setResults(prev => [newResult, ...prev].slice(0, 5));
       setIsRolling(false);
     }, 500);
   };
+
+  const getResultColor = (status: RollResult['rollStatus']) => {
+    if (status === 'critical') return 'text-green-600';
+    if (status === 'fumble') return 'text-red-600';
+    return 'text-foreground';
+  }
 
   return (
     <Card>
@@ -83,7 +103,7 @@ export function DiceRoller() {
                 <div className="text-center">
                   {results.length > 0 ? (
                      <>
-                        <div key={results[0].total} className="text-6xl font-bold animate-in fade-in zoom-in-50">
+                        <div key={results[0].total} className={cn("text-6xl font-bold animate-in fade-in zoom-in-50", getResultColor(results[0].rollStatus))}>
                            {results[0].total}
                         </div>
                         <p className="text-sm text-muted-foreground">{results[0].roll}</p>
@@ -98,7 +118,7 @@ export function DiceRoller() {
                 <h4 className="font-medium text-center">Recent Rolls</h4>
                 <ul className="space-y-1 text-sm text-center text-muted-foreground">
                     {results.slice(1).map((r, i) => (
-                        <li key={i}>{r.roll} = {r.total}</li>
+                        <li key={i} className={getResultColor(r.rollStatus)}>{r.roll} = {r.total}</li>
                     ))}
                 </ul>
             </div>
