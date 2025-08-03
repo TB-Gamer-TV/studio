@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Minus, Trash2, BookText } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
 const stats = [
@@ -34,6 +35,16 @@ const stats = [
   { name: "Intelligence", value: "10" },
   { name: "Wisdom", value: "10" },
   { name: "Charisma", value: "10" },
+];
+
+const classes = [
+  "Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", 
+  "Paladin", "Ranger", "Rogue", "Sorcerer", "Warlock", "Wizard"
+];
+
+const races = [
+  "Dragonborn", "Dwarf", "Elf", "Gnome", "Half-Elf", 
+  "Half-Orc", "Halfling", "Human", "Tiefling"
 ];
 
 type InventoryItem = {
@@ -46,6 +57,7 @@ type InventoryItem = {
 export default function CharacterSheetPage() {
   const [characterName, setCharacterName] = useState("Aelar");
   const [characterClass, setCharacterClass] = useState("Ranger");
+  const [characterRace, setCharacterRace] = useState("Human");
   const [characterLevel, setCharacterLevel] = useState("5");
   
   const [inventory, setInventory] = useState<InventoryItem[]>([
@@ -106,13 +118,13 @@ export default function CharacterSheetPage() {
           <p className="text-muted-foreground">Manage your character's stats, skills, and inventory.</p>
         </header>
         <Separator />
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+        <Card className="lg:col-span-4">
           <CardHeader>
             <CardTitle>Character Information</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="space-y-2">
+          <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div className="space-y-2 md:col-span-2">
               <Label htmlFor="char-name">Character Name</Label>
               <Input
                 id="char-name"
@@ -122,11 +134,25 @@ export default function CharacterSheetPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="char-class">Class</Label>
-              <Input
-                id="char-class"
-                value={characterClass}
-                onChange={(e) => setCharacterClass(e.target.value)}
-              />
+               <Select value={characterClass} onValueChange={setCharacterClass}>
+                <SelectTrigger id="char-class">
+                  <SelectValue placeholder="Select a class" />
+                </SelectTrigger>
+                <SelectContent>
+                  {classes.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+             <div className="space-y-2">
+              <Label htmlFor="char-race">Race</Label>
+              <Select value={characterRace} onValueChange={setCharacterRace}>
+                <SelectTrigger id="char-race">
+                  <SelectValue placeholder="Select a race" />
+                </SelectTrigger>
+                <SelectContent>
+                  {races.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="char-level">Level</Label>
@@ -184,32 +210,12 @@ export default function CharacterSheetPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Ability Scores</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-x-6 gap-y-4">
-            {stats.slice(0, 2).map((stat) => (
-              <div key={stat.name} className="space-y-2">
-                <Label htmlFor={stat.name.toLowerCase()}>{stat.name}</Label>
-                <Input
-                  id={stat.name.toLowerCase()}
-                  type="number"
-                  defaultValue={stat.value}
-                />
-              </div>
-            ))}
-             {stats.slice(2, 4).map((stat) => (
-              <div key={stat.name} className="space-y-2">
-                <Label htmlFor={stat.name.toLowerCase()}>{stat.name}</Label>
-                <Input
-                  id={stat.name.toLowerCase()}
-                  type="number"
-                  defaultValue={stat.value}
-                />
-              </div>
-            ))}
-             {stats.slice(4, 6).map((stat) => (
+          <CardContent className="grid grid-cols-3 gap-x-6 gap-y-4">
+            {stats.map((stat) => (
               <div key={stat.name} className="space-y-2">
                 <Label htmlFor={stat.name.toLowerCase()}>{stat.name}</Label>
                 <Input
@@ -222,7 +228,7 @@ export default function CharacterSheetPage() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-3">
+        <Card className="lg:col-span-4">
           <CardHeader>
             <CardTitle>Inventory</CardTitle>
             <CardDescription>
@@ -321,3 +327,5 @@ export default function CharacterSheetPage() {
     </div>
   );
 }
+
+    
