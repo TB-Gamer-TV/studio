@@ -192,6 +192,15 @@ export default function CharacterSheetPage() {
             </div>
           </CardContent>
         </Card>
+        
+        {spellcastingInfo.isCaster && (
+          <div className="lg:col-span-2">
+            <SpellSlots 
+              maxLevel={spellcastingInfo.maxSpellLevel}
+              isWarlock={spellcastingInfo.isWarlock}
+            />
+          </div>
+        )}
 
         <Card>
           <CardHeader>
@@ -213,13 +222,6 @@ export default function CharacterSheetPage() {
           </CardContent>
         </Card>
         
-        {spellcastingInfo.isCaster && (
-          <SpellSlots 
-            maxLevel={spellcastingInfo.maxSpellLevel}
-            isWarlock={spellcastingInfo.isWarlock}
-          />
-        )}
-
 
         <Card className="lg:col-span-2">
           <CardHeader>
