@@ -126,8 +126,8 @@ export default function CharacterSheetPage() {
           <CardHeader>
             <CardTitle>Character Information</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            <div className="space-y-2 md:col-span-2">
+          <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+            <div className="space-y-2 md:col-span-2 lg:col-span-2">
               <Label htmlFor="char-name">Character Name</Label>
               <Input
                 id="char-name"
