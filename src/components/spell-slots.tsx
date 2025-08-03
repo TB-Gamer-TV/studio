@@ -62,7 +62,7 @@ export function SpellSlots({ maxLevel, isWarlock = false }: SpellSlotsProps) {
       <CardContent className="space-y-4">
         {levels.map((level) => (
           <div key={level} className="flex items-center justify-between gap-4">
-            <Label className="text-sm font-medium">Level {level}</Label>
+            <Label className="w-16 text-sm font-medium">Level {level}</Label>
             <div className="flex items-center gap-2">
               <Input
                 type="number"
