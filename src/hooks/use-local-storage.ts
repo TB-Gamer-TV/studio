@@ -25,7 +25,7 @@ export function useLocalStorage<T>(key: string, defaultValue: T): [T, (value: T 
 
   const [storedValue, setStoredValue] = useState<T>(readValue);
 
-  const setValue = (value: T | ((val: T) => T)) => {
+  const setValue = useCallback((value: T | ((val: T) => T)) => {
     // Prevent build errors from trying to use "window" on the server
      if (typeof window === 'undefined') {
       console.warn(
@@ -42,16 +42,28 @@ export function useLocalStorage<T>(key: string, defaultValue: T): [T, (value: T 
       setStoredValue(valueToStore);
       // Save to local storage
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      // Dispatch a storage event so other tabs can sync
+      window.dispatchEvent(new StorageEvent('storage', { key }));
     } catch (error) {
       console.warn(`Error setting localStorage key “${key}”:`, error);
     }
-  };
+  }, [key, storedValue]);
 
   // This is a safety measure to ensure the state is up-to-date
   // if the localStorage is changed by another tab.
-  useEffect(() => {
-    setStoredValue(readValue());
-  }, [readValue]);
+   useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === key) {
+        setStoredValue(readValue());
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [key, readValue]);
 
   return [storedValue, setValue];
 }
