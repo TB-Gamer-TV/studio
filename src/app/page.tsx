@@ -173,79 +173,81 @@ export default function CharacterSheetPage() {
             </div>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Combat Stats</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between gap-2">
-              <Label htmlFor="ac" className="text-base whitespace-nowrap">Armor Class</Label>
-              <Input id="ac" type="number" value={armorClass} onChange={(e) => setArmorClass(e.target.value)} className="w-20 text-center" />
-            </div>
-            <div className="flex items-center justify-between gap-2">
-              <Label htmlFor="hp" className="text-base whitespace-nowrap">Hit Points</Label>
-              <Input id="hp" type="number" value={hitPoints} onChange={(e) => setHitPoints(e.target.value)} className="w-20 text-center" />
-            </div>
-             <div className="flex items-center justify-between gap-2">
-              <Label htmlFor="speed" className="text-base whitespace-nowrap">Speed</Label>
-              <Input id="speed" type="text" value={speed} onChange={(e) => setSpeed(e.target.value)} className="w-20 text-center" />
-            </div>
-            <div className="flex items-center justify-between gap-2">
-              <Label htmlFor="initiative" className="text-base whitespace-nowrap">Initiative</Label>
-              <Input id="initiative" type="text" value={initiative} onChange={(e) => setInitiative(e.target.value)} className="w-20 text-center" />
-            </div>
-          </CardContent>
-        </Card>
         
-        {spellcastingInfo.isCaster && (
-          <div className="lg:col-span-2">
-            <SpellSlots 
-              maxLevel={spellcastingInfo.maxSpellLevel}
-              isWarlock={spellcastingInfo.isWarlock}
-            />
-          </div>
-        )}
+        <div className="grid grid-cols-1 gap-6 lg:col-span-4 lg:grid-cols-2">
+            <Card>
+            <CardHeader>
+                <CardTitle>Combat Stats</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                    <Label htmlFor="ac">Armor Class</Label>
+                    <Input id="ac" type="number" value={armorClass} onChange={(e) => setArmorClass(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="hp">Hit Points</Label>
+                    <Input id="hp" type="number" value={hitPoints} onChange={(e) => setHitPoints(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="speed">Speed</Label>
+                    <Input id="speed" type="text" value={speed} onChange={(e) => setSpeed(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="initiative">Initiative</Label>
+                    <Input id="initiative" type="text" value={initiative} onChange={(e) => setInitiative(e.target.value)} />
+                </div>
+            </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Currency</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-             <div className="flex items-center justify-between gap-2">
-              <Label htmlFor="gp">Gold</Label>
-              <Input id="gp" type="number" defaultValue="50" className="w-24" />
-            </div>
-             <div className="flex items-center justify-between gap-2">
-              <Label htmlFor="sp">Silver</Label>
-              <Input id="sp" type="number" defaultValue="25" className="w-24" />
-            </div>
-             <div className="flex items-center justify-between gap-2">
-              <Label htmlFor="cp">Copper</Label>
-              <Input id="cp" type="number" defaultValue="10" className="w-24" />
-            </div>
-          </CardContent>
-        </Card>
-        
+            <Card>
+            <CardHeader>
+                <CardTitle>Currency</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="space-y-2">
+                <Label htmlFor="gp">Gold</Label>
+                <Input id="gp" type="number" defaultValue="50" />
+                </div>
+                <div className="space-y-2">
+                <Label htmlFor="sp">Silver</Label>
+                <Input id="sp" type="number" defaultValue="25" />
+                </div>
+                <div className="space-y-2">
+                <Label htmlFor="cp">Copper</Label>
+                <Input id="cp" type="number" defaultValue="10" />
+                </div>
+            </CardContent>
+            </Card>
+        </div>
 
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Ability Scores</CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-3 gap-x-6 gap-y-4">
-            {stats.map((stat) => (
-              <div key={stat.name} className="space-y-2">
-                <Label htmlFor={stat.name.toLowerCase()}>{stat.name}</Label>
-                <Input
-                  id={stat.name.toLowerCase()}
-                  type="number"
-                  defaultValue={stat.value}
+
+        <div className={`grid grid-cols-1 gap-6 lg:col-span-4 ${spellcastingInfo.isCaster ? 'lg:grid-cols-2' : ''}`}>
+            <Card className={spellcastingInfo.isCaster ? '' : 'lg:col-span-2'}>
+              <CardHeader>
+                <CardTitle>Ability Scores</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
+                {stats.map((stat) => (
+                  <div key={stat.name} className="space-y-2">
+                    <Label htmlFor={stat.name.toLowerCase()}>{stat.name}</Label>
+                    <Input
+                      id={stat.name.toLowerCase()}
+                      type="number"
+                      defaultValue={stat.value}
+                    />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+            
+            {spellcastingInfo.isCaster && (
+                <SpellSlots 
+                maxLevel={spellcastingInfo.maxSpellLevel}
+                isWarlock={spellcastingInfo.isWarlock}
                 />
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
+            )}
+        </div>
+        
         <Card className="lg:col-span-4">
           <CardHeader>
             <CardTitle>Inventory</CardTitle>
