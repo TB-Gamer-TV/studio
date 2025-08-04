@@ -36,11 +36,12 @@ export function useLocalStorage<T>(key: string, defaultValue: T): [T, (value: T 
     }
 
     try {
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
+      // Allow value to be a function so we have the same API as useState
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      // Save state
       setStoredValue(valueToStore);
+      // Save to local storage
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
-      window.dispatchEvent(new StorageEvent('storage', { key }));
     } catch (error) {
       console.warn(`Error setting localStorage key “${key}”:`, error);
     }
