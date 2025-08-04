@@ -55,8 +55,8 @@ export function DiceRoller() {
   };
 
   const getResultColor = (status: RollResult['rollStatus']) => {
-    if (status === 'critical') return 'text-green-500';
-    if (status === 'fumble') return 'text-red-500';
+    if (status === 'critical') return 'text-chart-2';
+    if (status === 'fumble') return 'text-destructive';
     return 'text-foreground';
   }
 
