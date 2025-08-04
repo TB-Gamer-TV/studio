@@ -39,9 +39,9 @@ export async function handleGenerateEncounter(prevState: State | undefined, form
     };
   }
   
-  // If no API key is present, return an error.
-  if (!process.env.GEMINI_API_KEY) {
-    return { errors: { _form: ["GEMINI_API_KEY is not set. Please add it to your .env file to use the encounter generator."] } };
+  // If no API key is present or it's the placeholder, return an error.
+  if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
+    return { errors: { _form: ["GEMINI_API_KEY is not set. Please add it to your .env file to use the encounter generator. You can get a key from Google AI Studio."] } };
   }
 
 
