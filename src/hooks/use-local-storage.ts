@@ -9,22 +9,20 @@ import { useState, useEffect, useCallback } from 'react';
 export function useLocalStorage<T>(key: string, defaultValue: T): [T, (value: T | ((val: T) => T)) => void] {
   const [storedValue, setStoredValue] = useState<T>(defaultValue);
 
-  // This effect runs only on the client, after the initial render.
+  // This effect runs only on the client, after the initial render, to read from local storage.
   useEffect(() => {
     try {
       const item = window.localStorage.getItem(key);
       if (item) {
         setStoredValue(JSON.parse(item));
       } else {
-        // This ensures that if no value is in localStorage, we use the default.
         window.localStorage.setItem(key, JSON.stringify(defaultValue));
-        setStoredValue(defaultValue);
       }
     } catch (error) {
       console.warn(`Error reading localStorage key “${key}”:`, error);
-      setStoredValue(defaultValue);
     }
-  }, [key, defaultValue]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
 
 
   const setValue = useCallback((value: T | ((val: T) => T)) => {
@@ -36,21 +34,22 @@ export function useLocalStorage<T>(key: string, defaultValue: T): [T, (value: T 
     }
 
     try {
-      // Allow value to be a function so we have the same API as useState
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      // Save state
-      setStoredValue(valueToStore);
-      // Save to local storage
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      setStoredValue(currentValue => {
+        // Allow value to be a function so we have the same API as useState
+        const valueToStore = value instanceof Function ? value(currentValue) : value;
+        // Save to local storage
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        return valueToStore;
+      });
     } catch (error) {
       console.warn(`Error setting localStorage key “${key}”:`, error);
     }
-  }, [key, storedValue]);
+  }, [key]);
   
   // Effect to sync changes across tabs
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === key && event.newValue) {
+      if (event.key === key && event.newValue !== null) {
         try {
           setStoredValue(JSON.parse(event.newValue));
         } catch(error) {
