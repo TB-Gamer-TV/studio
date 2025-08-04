@@ -174,21 +174,21 @@ export default function CharacterSheetPage() {
             <CardTitle>Combat Stats</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="ac" className="text-base">Armor Class</Label>
-              <Input id="ac" type="number" defaultValue="15" className="w-20 text-center" />
+            <div className="flex items-center justify-between gap-2">
+              <Label htmlFor="ac" className="text-base whitespace-nowrap">Armor Class</Label>
+              <Input id="ac" type="number" defaultValue="15" className="max-w-20 text-center" />
             </div>
-            <div className="flex items-center justify-between">
-              <Label htmlFor="hp" className="text-base">Hit Points</Label>
-              <Input id="hp" type="number" defaultValue="42" className="w-20 text-center" />
+            <div className="flex items-center justify-between gap-2">
+              <Label htmlFor="hp" className="text-base whitespace-nowrap">Hit Points</Label>
+              <Input id="hp" type="number" defaultValue="42" className="max-w-20 text-center" />
             </div>
-             <div className="flex items-center justify-between">
-              <Label htmlFor="speed" className="text-base">Speed</Label>
-              <Input id="speed" type="text" defaultValue="30ft" className="w-20 text-center" />
+             <div className="flex items-center justify-between gap-2">
+              <Label htmlFor="speed" className="text-base whitespace-nowrap">Speed</Label>
+              <Input id="speed" type="text" defaultValue="30ft" className="max-w-20 text-center" />
             </div>
-            <div className="flex items-center justify-between">
-              <Label htmlFor="initiative" className="text-base">Initiative</Label>
-              <Input id="initiative" type="number" defaultValue="+2" className="w-20 text-center" />
+            <div className="flex items-center justify-between gap-2">
+              <Label htmlFor="initiative" className="text-base whitespace-nowrap">Initiative</Label>
+              <Input id="initiative" type="number" defaultValue="+2" className="max-w-20 text-center" />
             </div>
           </CardContent>
         </Card>
@@ -209,15 +209,15 @@ export default function CharacterSheetPage() {
           <CardContent className="space-y-3">
              <div className="flex items-center justify-between gap-2">
               <Label htmlFor="gp">Gold</Label>
-              <Input id="gp" type="number" defaultValue="50" className="w-24" />
+              <Input id="gp" type="number" defaultValue="50" className="max-w-24" />
             </div>
              <div className="flex items-center justify-between gap-2">
               <Label htmlFor="sp">Silver</Label>
-              <Input id="sp" type="number" defaultValue="25" className="w-24" />
+              <Input id="sp" type="number" defaultValue="25" className="max-w-24" />
             </div>
              <div className="flex items-center justify-between gap-2">
               <Label htmlFor="cp">Copper</Label>
-              <Input id="cp" type="number" defaultValue="10" className="w-24" />
+              <Input id="cp" type="number" defaultValue="10" className="max-w-24" />
             </div>
           </CardContent>
         </Card>
@@ -339,5 +339,4 @@ export default function CharacterSheetPage() {
       </div>
     </div>
   );
-
-    
+}
