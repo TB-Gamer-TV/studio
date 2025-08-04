@@ -1,3 +1,6 @@
+
+'use client';
+
 import { DiceRoller } from "@/components/dice-roller";
 import { Separator } from "@/components/ui/separator";
 

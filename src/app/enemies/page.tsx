@@ -1,12 +1,14 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Plus, Minus, Trash2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { useState } from 'react';
 
 type Enemy = {
   id: number;
@@ -22,7 +24,7 @@ const initialEnemies: Enemy[] = [
 ];
 
 export default function EnemyTrackerPage() {
-  const [enemies, setEnemies] = useState<Enemy[]>(initialEnemies);
+  const [enemies, setEnemies] = useLocalStorage<Enemy[]>('enemies', initialEnemies);
   const [newEnemyName, setNewEnemyName] = useState('');
   const [newEnemyHp, setNewEnemyHp] = useState('');
 

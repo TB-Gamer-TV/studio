@@ -27,9 +27,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SpellSlots, getSpellcastingInfo } from "@/components/spell-slots";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 
 
-const stats = [
+type Stat = {
+  name: string;
+  value: string;
+};
+
+const initialStats: Stat[] = [
   { name: "Strength", value: "10" },
   { name: "Dexterity", value: "10" },
   { name: "Constitution", value: "10" },
@@ -55,25 +61,45 @@ type InventoryItem = {
   description: string;
 };
 
-export default function CharacterSheetPage() {
-  const [characterName, setCharacterName] = useState("Aelar");
-  const [characterClass, setCharacterClass] = useState("Ranger");
-  const [characterRace, setCharacterRace] = useState("Human");
-  const [characterLevel, setCharacterLevel] = useState("5");
-
-  const [armorClass, setArmorClass] = useState("15");
-  const [hitPoints, setHitPoints] = useState("42");
-  const [speed, setSpeed] = useState("30ft");
-  const [initiative, setInitiative] = useState("+2");
-  
-  const [inventory, setInventory] = useState<InventoryItem[]>([
+const initialInventory: InventoryItem[] = [
     { id: 1, name: "Longbow", quantity: 1, description: "1d8 piercing damage, range 150/600 ft." },
     { id: 2, name: "Arrows", quantity: 20, description: "" },
     { id: 3, name: "Rations", quantity: 5, description: "1 day of food." },
-  ]);
+];
+
+type Currency = {
+  gp: string;
+  sp: string;
+  cp: string;
+}
+
+const initialCurrency: Currency = { gp: "50", sp: "25", cp: "10" };
+
+export default function CharacterSheetPage() {
+  const [characterName, setCharacterName] = useLocalStorage("characterName", "Aelar");
+  const [characterClass, setCharacterClass] = useLocalStorage("characterClass", "Ranger");
+  const [characterRace, setCharacterRace] = useLocalStorage("characterRace", "Human");
+  const [characterLevel, setCharacterLevel] = useLocalStorage("characterLevel", "5");
+
+  const [armorClass, setArmorClass] = useLocalStorage("armorClass", "15");
+  const [hitPoints, setHitPoints] = useLocalStorage("hitPoints", "42");
+  const [speed, setSpeed] = useLocalStorage("speed", "30ft");
+  const [initiative, setInitiative] = useLocalStorage("initiative", "+2");
+  const [stats, setStats] = useLocalStorage<Stat[]>('stats', initialStats);
+  const [currency, setCurrency] = useLocalStorage<Currency>('currency', initialCurrency);
+  
+  const [inventory, setInventory] = useLocalStorage<InventoryItem[]>("inventory", initialInventory);
   const [newItemName, setNewItemName] = useState("");
   const [newItemQuantity, setNewItemQuantity] = useState("1");
   const [newItemDescription, setNewItemDescription] = useState("");
+
+  const handleStatChange = (statName: string, value: string) => {
+    setStats(stats.map(stat => stat.name === statName ? { ...stat, value } : stat));
+  }
+  
+  const handleCurrencyChange = (coin: keyof Currency, value: string) => {
+    setCurrency(prev => ({...prev, [coin]: value}));
+  }
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
@@ -206,15 +232,15 @@ export default function CharacterSheetPage() {
             <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="space-y-2">
                 <Label htmlFor="gp">Gold</Label>
-                <Input id="gp" type="number" defaultValue="50" />
+                <Input id="gp" type="number" value={currency.gp} onChange={(e) => handleCurrencyChange('gp', e.target.value)} />
                 </div>
                 <div className="space-y-2">
                 <Label htmlFor="sp">Silver</Label>
-                <Input id="sp" type="number" defaultValue="25" />
+                <Input id="sp" type="number" value={currency.sp} onChange={(e) => handleCurrencyChange('sp', e.target.value)} />
                 </div>
                 <div className="space-y-2">
                 <Label htmlFor="cp">Copper</Label>
-                <Input id="cp" type="number" defaultValue="10" />
+                <Input id="cp" type="number" value={currency.cp} onChange={(e) => handleCurrencyChange('cp', e.target.value)} />
                 </div>
             </CardContent>
             </Card>
@@ -233,7 +259,8 @@ export default function CharacterSheetPage() {
                     <Input
                       id={stat.name.toLowerCase()}
                       type="number"
-                      defaultValue={stat.value}
+                      value={stat.value}
+                      onChange={(e) => handleStatChange(stat.name, e.target.value)}
                     />
                   </div>
                 ))}
@@ -242,6 +269,8 @@ export default function CharacterSheetPage() {
             
             {spellcastingInfo.isCaster && (
                 <SpellSlots 
+                characterClass={characterClass}
+                characterLevel={parseInt(characterLevel, 10) || 1}
                 maxLevel={spellcastingInfo.maxSpellLevel}
                 isWarlock={spellcastingInfo.isWarlock}
                 />

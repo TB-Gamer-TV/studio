@@ -1,12 +1,14 @@
+
 'use client';
 
-import { useState } from 'react';
 import { Dices } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useState } from 'react';
 
 const diceTypes = [4, 6, 8, 10, 12, 20, 100];
 
@@ -17,14 +19,13 @@ type RollResult = {
 };
 
 export function DiceRoller() {
-  const [numberOfDice, setNumberOfDice] = useState(1);
-  const [modifier, setModifier] = useState(0);
-  const [results, setResults] = useState<RollResult[]>([]);
+  const [numberOfDice, setNumberOfDice] = useLocalStorage('dice-numberOfDice', 1);
+  const [modifier, setModifier] = useLocalStorage('dice-modifier', 0);
+  const [results, setResults] = useLocalStorage<RollResult[]>('dice-results', []);
   const [isRolling, setIsRolling] = useState(false);
 
   const rollDice = (sides: number) => {
     setIsRolling(true);
-    setResults([]);
 
     setTimeout(() => {
       let diceSum = 0;
@@ -37,30 +38,32 @@ export function DiceRoller() {
       const total = diceSum + modifier;
 
       let rollStatus: RollResult['rollStatus'] = 'normal';
-      if (diceSum === numberOfDice) {
-        rollStatus = 'fumble';
-      } else if (diceSum === numberOfDice * sides) {
-        rollStatus = 'critical';
+      if (sides === 20) {
+        if (diceSum === 1) {
+            rollStatus = 'fumble';
+        } else if (diceSum === 20) {
+            rollStatus = 'critical';
+        }
       }
-
-      const rollString = `${numberOfDice}d${sides} + ${modifier}`;
+      
+      const rollString = `${numberOfDice}d${sides}${modifier > 0 ? ` + ${modifier}` : ''}`;
       const newResult: RollResult = { roll: rollString, total, rollStatus };
       
-      setResults(prev => [newResult, ...prev].slice(0, 5));
+      setResults(prev => [newResult, ...prev].slice(0, 10));
       setIsRolling(false);
-    }, 500);
+    }, 300);
   };
 
   const getResultColor = (status: RollResult['rollStatus']) => {
-    if (status === 'critical') return 'text-green-600';
-    if (status === 'fumble') return 'text-red-600';
+    if (status === 'critical') return 'text-green-500';
+    if (status === 'fumble') return 'text-red-500';
     return 'text-foreground';
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Dice Roller</CardTitle>
+        <CardTitle>Manual Dice Roller</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -95,15 +98,15 @@ export function DiceRoller() {
               ))}
             </div>
           </div>
-          <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-background">
-            <div className="flex items-center justify-center w-48 h-48 rounded-full bg-secondary">
+          <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-secondary/50">
+            <div className="flex items-center justify-center w-48 h-48 rounded-full bg-background/50">
               {isRolling ? (
                 <Dices className="w-24 h-24 animate-spin text-muted-foreground" />
               ) : (
                 <div className="text-center">
                   {results.length > 0 ? (
                      <>
-                        <div key={results[0].total} className={cn("text-6xl font-bold animate-in fade-in zoom-in-50", getResultColor(results[0].rollStatus))}>
+                        <div key={results[0].total + results[0].roll} className={cn("text-6xl font-bold animate-in fade-in zoom-in-50", getResultColor(results[0].rollStatus))}>
                            {results[0].total}
                         </div>
                         <p className="text-sm text-muted-foreground">{results[0].roll}</p>
@@ -116,7 +119,7 @@ export function DiceRoller() {
             </div>
              <div className="w-full mt-4 space-y-2">
                 <h4 className="font-medium text-center">Recent Rolls</h4>
-                <ul className="space-y-1 text-sm text-center text-muted-foreground">
+                <ul className="h-24 overflow-y-auto text-sm text-center text-muted-foreground">
                     {results.slice(1).map((r, i) => (
                         <li key={i} className={getResultColor(r.rollStatus)}>{r.roll} = {r.total}</li>
                     ))}
