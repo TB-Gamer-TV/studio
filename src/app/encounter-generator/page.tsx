@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useActionState } from 'react';
@@ -16,6 +17,9 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { handleGenerateEncounter } from '@/lib/actions';
 import { Loader2, WandSparkles } from 'lucide-react';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { GenerateEncounterOutput } from '@/ai/flows/generate-encounter';
+import { useEffect } from 'react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -57,7 +61,17 @@ const StatBlockSection = ({ title, content }: { title: string; content?: string 
 
 
 export default function EncounterGeneratorPage() {
+  const [storedEncounter, setStoredEncounter] = useLocalStorage<GenerateEncounterOutput | null>('encounter-generator-data', null);
   const [state, formAction] = useActionState(handleGenerateEncounter, undefined);
+
+  useEffect(() => {
+    if (state?.data) {
+      setStoredEncounter(state.data);
+    }
+  }, [state?.data, setStoredEncounter]);
+  
+  const encounterData = state?.data ?? storedEncounter;
+
 
   return (
     <div className="space-y-6">
@@ -103,19 +117,19 @@ export default function EncounterGeneratorPage() {
           </Card>
         </div>
         <div className="space-y-6 lg:col-span-2">
-          {state?.data ? (
+          {encounterData ? (
             <>
               <Card>
                 <CardHeader>
                   <CardTitle>Encounter Description</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="whitespace-pre-wrap">{state.data.description}</p>
+                  <p className="whitespace-pre-wrap">{encounterData.description}</p>
                 </CardContent>
               </Card>
               <div className='space-y-6'>
                 <h2 className="text-2xl font-bold font-headline">Enemy Stat Blocks</h2>
-                {state.data.enemies.map((enemy, index) => (
+                {encounterData.enemies.map((enemy, index) => (
                     <Card key={index} className="bg-secondary/50">
                         <CardHeader>
                             <CardTitle className="text-2xl font-headline">{enemy.name}</CardTitle>
