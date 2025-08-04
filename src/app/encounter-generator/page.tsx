@@ -88,16 +88,21 @@ export default function EncounterGeneratorPage() {
                   <p className="whitespace-pre-wrap">{state.data.description}</p>
                 </CardContent>
               </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Enemy Stat Blocks</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <pre className="p-4 overflow-x-auto rounded-md bg-secondary text-secondary-foreground font-code">
-                    {state.data.encounterStats}
-                  </pre>
-                </CardContent>
-              </Card>
+              <div className='space-y-6'>
+                <h2 className="text-2xl font-bold font-headline">Enemy Stat Blocks</h2>
+                {state.data.enemies.map((enemy, index) => (
+                    <Card key={index}>
+                        <CardHeader>
+                            <CardTitle>{enemy.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <pre className="p-4 overflow-x-auto rounded-md bg-secondary text-secondary-foreground font-code">
+                                {enemy.statBlock}
+                            </pre>
+                        </CardContent>
+                    </Card>
+                ))}
+              </div>
             </>
           ) : (
             <Card className="flex flex-col items-center justify-center h-full min-h-[400px]">

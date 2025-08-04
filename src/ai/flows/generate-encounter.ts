@@ -3,7 +3,7 @@
 'use server';
 
 /**
- * @fileOverview Generates balanced D&D encounters appropriate to a desired level, including a description and stat blocks.
+ * @fileOverview Generates balanced D&D encounters appropriate to a desired level, including a description and stat blocks for each enemy.
  *
  * - generateEncounter - A function that generates a D\&D encounter.
  * - GenerateEncounterInput - The input type for the generateEncounter function.
@@ -20,9 +20,14 @@ const GenerateEncounterInputSchema = z.object({
 });
 export type GenerateEncounterInput = z.infer<typeof GenerateEncounterInputSchema>;
 
+const EnemyStatBlockSchema = z.object({
+    name: z.string().describe('The name of the enemy.'),
+    statBlock: z.string().describe("The full D&D 5e stat block for the enemy, formatted for display.")
+});
+
 const GenerateEncounterOutputSchema = z.object({
   description: z.string().describe('A description of the encounter.'),
-  encounterStats: z.string().describe('The encounter stats, including the enemies and their stats')
+  enemies: z.array(EnemyStatBlockSchema).describe('An array of enemies in the encounter, each with their own stat block.')
 });
 export type GenerateEncounterOutput = z.infer<typeof GenerateEncounterOutputSchema>;
 
@@ -36,7 +41,7 @@ const generateEncounterPrompt = ai.definePrompt({
   output: {schema: GenerateEncounterOutputSchema},
   prompt: `You are a Dungeon Master with 20 years of experience. You are creating a D&D encounter for a party of level {{{level}}} characters. The party size is {{{partySize}}}. The environment is {{{environment}}}.
 
-Create a balanced and challenging encounter appropriate for the party's level, size and environment. Include a description of the encounter, as well as the stat blocks for the enemies involved. The description should include enough detail for the DM to run the encounter.`,
+Create a balanced and challenging encounter appropriate for the party's level, size and environment. Include a description of the encounter. For each enemy involved, create a separate stat block and add it to the enemies array. The description should include enough detail for the DM to run the encounter.`,
 });
 
 const generateEncounterFlow = ai.defineFlow(

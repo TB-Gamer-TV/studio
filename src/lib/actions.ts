@@ -3,7 +3,7 @@
 import { config } from 'dotenv';
 config();
 
-import { generateEncounter } from '@/ai/flows/generate-encounter';
+import { GenerateEncounterOutput, generateEncounter } from '@/ai/flows/generate-encounter';
 import { z } from 'zod';
 
 const encounterSchema = z.object({
@@ -13,10 +13,7 @@ const encounterSchema = z.object({
 });
 
 type State = {
-    data?: {
-        description: string;
-        encounterStats: string;
-    };
+    data?: GenerateEncounterOutput;
     errors?: {
         level?: string[];
         partySize?: string[];
