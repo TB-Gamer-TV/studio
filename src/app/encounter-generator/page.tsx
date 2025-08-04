@@ -31,6 +31,31 @@ function SubmitButton() {
   );
 }
 
+// Helper to render sections with bold titles from markdown-like text
+const StatBlockSection = ({ title, content }: { title: string; content?: string }) => {
+  if (!content) return null;
+
+  const renderContent = (text: string) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={index} className="italic">{part.slice(2, -2)} </strong>;
+      }
+      return part;
+    });
+  };
+
+  return (
+    <div className="space-y-1">
+      <h4 className="font-bold text-lg font-headline border-b-2 border-primary/50 pb-1 mb-2">{title}</h4>
+      {content.split('\n').filter(line => line.trim()).map((line, index) => (
+         <p key={index} className="text-sm">{renderContent(line)}</p>
+      ))}
+    </div>
+  );
+};
+
+
 export default function EncounterGeneratorPage() {
   const [state, formAction] = useActionState(handleGenerateEncounter, undefined);
 
@@ -91,14 +116,36 @@ export default function EncounterGeneratorPage() {
               <div className='space-y-6'>
                 <h2 className="text-2xl font-bold font-headline">Enemy Stat Blocks</h2>
                 {state.data.enemies.map((enemy, index) => (
-                    <Card key={index}>
+                    <Card key={index} className="bg-secondary/50">
                         <CardHeader>
-                            <CardTitle>{enemy.name}</CardTitle>
+                            <CardTitle className="text-2xl font-headline">{enemy.name}</CardTitle>
+                            <p className="text-sm italic text-muted-foreground">{enemy.meta}</p>
                         </CardHeader>
-                        <CardContent>
-                            <pre className="p-4 overflow-x-auto rounded-md bg-secondary text-secondary-foreground font-code">
-                                {enemy.statBlock}
-                            </pre>
+                        <CardContent className="space-y-4 font-code">
+                            <div className='grid grid-cols-3 gap-y-2 text-center border-y-2 border-primary/50 py-2'>
+                                <div><span className='font-bold text-sm block font-headline'>Armor Class</span> {enemy.armorClass}</div>
+                                <div><span className='font-bold text-sm block font-headline'>Hit Points</span> {enemy.hitPoints}</div>
+                                <div><span className='font-bold text-sm block font-headline'>Speed</span> {enemy.speed}</div>
+                            </div>
+
+                            <div className="text-center border-b-2 border-primary/50 py-2">
+                                <p className="text-sm">{enemy.abilityScores}</p>
+                            </div>
+                            
+                             <div className="space-y-2 text-sm">
+                                {enemy.skills && <p><strong className="font-headline">Skills:</strong> {enemy.skills}</p>}
+                                {enemy.senses && <p><strong className="font-headline">Senses:</strong> {enemy.senses}</p>}
+                                {enemy.languages && <p><strong className="font-headline">Languages:</strong> {enemy.languages}</p>}
+                                <p><strong className="font-headline">Challenge:</strong> {enemy.challenge}</p>
+                             </div>
+
+                             <Separator className="bg-primary/50" />
+
+                            <StatBlockSection title="Traits" content={enemy.traits} />
+                            <StatBlockSection title="Actions" content={enemy.actions} />
+                            <StatBlockSection title="Reactions" content={enemy.reactions} />
+                            <StatBlockSection title="Legendary Actions" content={enemy.legendaryActions} />
+
                         </CardContent>
                     </Card>
                 ))}
