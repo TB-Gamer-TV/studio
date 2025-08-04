@@ -10,7 +10,7 @@ const getIsMobile = () => {
 }
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState(getIsMobile)
+  const [isMobile, setIsMobile] = React.useState(false)
 
   React.useEffect(() => {
     const onResize = () => {
