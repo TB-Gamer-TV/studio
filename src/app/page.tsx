@@ -124,7 +124,7 @@ export default function CharacterSheetPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
         <Card className="lg:col-span-4">
           <CardHeader>
-            <CardTitle>Character Information</CardTitle>
+            <div className="text-2xl font-semibold leading-none tracking-tight">Character Information</div>
           </CardHeader>
           <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
             <div className="space-y-2 md:col-span-2 lg:col-span-2">
@@ -339,4 +339,5 @@ export default function CharacterSheetPage() {
       </div>
     </div>
   );
-}
+
+    
