@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
-import { Plus, Minus, Trash2 } from 'lucide-react';
+import { Plus, Minus, Trash2, Heart, Shield } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useState } from 'react';
 
@@ -27,6 +27,7 @@ export default function EnemyTrackerPage() {
   const [enemies, setEnemies] = useLocalStorage<Enemy[]>('enemies', initialEnemies);
   const [newEnemyName, setNewEnemyName] = useState('');
   const [newEnemyHp, setNewEnemyHp] = useState('');
+  const [damageValues, setDamageValues] = useState<Record<number, string>>({});
 
   const handleAddEnemy = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,10 +52,22 @@ export default function EnemyTrackerPage() {
       )
     );
   };
+  
+  const handleBulkHpChange = (id: number, operation: 'damage' | 'heal') => {
+    const amount = parseInt(damageValues[id] || '0', 10);
+    if (isNaN(amount) || amount <= 0) return;
+
+    const change = operation === 'damage' ? -amount : amount;
+    handleHpChange(id, change);
+  };
 
   const handleRemoveEnemy = (id: number) => {
     setEnemies(enemies.filter((enemy) => enemy.id !== id));
   };
+  
+  const handleDamageValueChange = (id: number, value: string) => {
+    setDamageValues(prev => ({...prev, [id]: value}));
+  }
 
   return (
     <div className="space-y-6">
@@ -99,7 +112,7 @@ export default function EnemyTrackerPage() {
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="flex items-center justify-center gap-2">
                   <Button size="icon" variant="outline" onClick={() => handleHpChange(enemy.id, -1)}>
                     <Minus />
@@ -115,6 +128,21 @@ export default function EnemyTrackerPage() {
                   </Button>
                 </div>
                 <Progress value={(enemy.hp / enemy.maxHp) * 100} />
+                 <div className="flex items-center gap-2">
+                    <Input
+                        type="number"
+                        placeholder="Amount"
+                        className="h-9 text-center"
+                        value={damageValues[enemy.id] || ''}
+                        onChange={(e) => handleDamageValueChange(enemy.id, e.target.value)}
+                    />
+                    <Button variant="outline" size="sm" onClick={() => handleBulkHpChange(enemy.id, 'damage')}>
+                        <Shield className="mr-1 h-4 w-4"/> Damage
+                    </Button>
+                     <Button variant="outline" size="sm" onClick={() => handleBulkHpChange(enemy.id, 'heal')}>
+                        <Heart className="mr-1 h-4 w-4"/> Heal
+                    </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
