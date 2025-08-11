@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -55,8 +55,7 @@ type Currency = {
   cp: string;
 }
 
-export default function CharacterSheetPage({ params: paramsProp }: { params: { id: string } }) {
-  const params = use(Promise.resolve(paramsProp));
+export default function CharacterSheetPage({ params }: { params: { id: string } }) {
   const [characters, setCharacters] = useLocalStorage<Character[]>('characters', []);
   const [character, setCharacter] = useState<Character | null>(null);
 
