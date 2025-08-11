@@ -15,11 +15,12 @@ import {
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Dices, ScrollText, Shield, UserCircle, Settings } from 'lucide-react';
+import { Dices, ScrollText, Shield, UserCircle, Settings, Users } from 'lucide-react';
 import { Icons } from '@/components/icons';
 
 const navItems = [
   { href: '/', label: 'Character Sheet', icon: UserCircle },
+  { href: '/party-tracker', label: 'Party Tracker', icon: Users },
   { href: '/enemies', label: 'Enemy Tracker', icon: Shield },
   { href: '/encounter-generator', label: 'Encounter Generator', icon: ScrollText },
   { href: '/dice-roller', label: 'Dice Roller', icon: Dices },
