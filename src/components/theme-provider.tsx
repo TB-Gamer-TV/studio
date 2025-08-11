@@ -40,9 +40,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const root = document.documentElement;
+        const foregroundColor = getForegroundColor(primaryColor);
+        
         root.style.setProperty('--primary', primaryColor);
-        root.style.setProperty('--primary-foreground', getForegroundColor(primaryColor));
+        root.style.setProperty('--primary-foreground', foregroundColor);
         root.style.setProperty('--ring', primaryColor);
+        
+        // Also update sidebar-specific variables that depend on the primary color
+        root.style.setProperty('--sidebar-primary', primaryColor);
+        root.style.setProperty('--sidebar-primary-foreground', foregroundColor);
+        root.style.setProperty('--sidebar-ring', primaryColor);
+
     }, [primaryColor]);
     
     useEffect(() => {
@@ -67,4 +75,3 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         </ThemeContext.Provider>
     );
 }
-

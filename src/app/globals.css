@@ -33,8 +33,8 @@
     --sidebar-foreground: 35 54% 89%;
     --sidebar-primary: var(--primary);
     --sidebar-primary-foreground: var(--primary-foreground);
-    --sidebar-accent: 28 20% 35%;
-    --sidebar-accent-foreground: 35 54% 95%;
+    --sidebar-accent: var(--primary);
+    --sidebar-accent-foreground: var(--primary-foreground);
     --sidebar-border: 28 20% 30%;
     --sidebar-ring: var(--ring);
   }
@@ -67,8 +67,8 @@
     --sidebar-foreground: 35 20% 85%;
     --sidebar-primary: var(--primary);
     --sidebar-primary-foreground: var(--primary-foreground);
-    --sidebar-accent: 28 10% 20%;
-    --sidebar-accent-foreground: 35 20% 85%;
+    --sidebar-accent: var(--primary);
+    --sidebar-accent-foreground: var(--primary-foreground);
     --sidebar-border: 28 10% 25%;
     --sidebar-ring: var(--ring);
   }
