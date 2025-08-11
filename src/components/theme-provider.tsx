@@ -28,12 +28,21 @@ const fonts: Record<string, { name: string, family: string }> = {
     'Source Code Pro': { name: 'Source Code Pro', family: 'monospace' },
 };
 
+// Helper function to get the foreground color based on the primary color's lightness
+const getForegroundColor = (hsl: string) => {
+    const l = parseInt(hsl.split(' ')[2].replace('%',''));
+    return l > 50 ? '28 30% 20%' : '35 54% 98%';
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [primaryColor, setPrimaryColor] = useLocalStorage('theme-primary-color', '28 30% 50%');
     const [font, setFont] = useLocalStorage('theme-font', 'Literata');
 
     useEffect(() => {
-        document.documentElement.style.setProperty('--primary', primaryColor);
+        const root = document.documentElement;
+        root.style.setProperty('--primary', primaryColor);
+        root.style.setProperty('--primary-foreground', getForegroundColor(primaryColor));
+        root.style.setProperty('--ring', primaryColor);
     }, [primaryColor]);
     
     useEffect(() => {
