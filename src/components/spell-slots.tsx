@@ -96,10 +96,12 @@ export function SpellSlots({ maxLevel, isWarlock = false, characterClass, charac
 
             if(casterTypeSlots && characterLevel > 0){
                 const levelSlots = casterTypeSlots[characterLevel - 1];
-                levelSlots.forEach((numSlots, i) => {
-                    const level = i + 1;
-                    newSlots[level] = { current: slots[level]?.current ?? numSlots, max: numSlots };
-                });
+                if (levelSlots) {
+                  levelSlots.forEach((numSlots, i) => {
+                      const level = i + 1;
+                      newSlots[level] = { current: slots[level]?.current ?? numSlots, max: numSlots };
+                  });
+                }
             }
         }
         
