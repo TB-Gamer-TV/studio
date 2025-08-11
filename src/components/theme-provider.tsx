@@ -34,6 +34,21 @@ const getForegroundColor = (hsl: string) => {
     return l > 50 ? '28 30% 20%' : '35 54% 98%';
 }
 
+// Helper function to derive the sidebar background color
+const getSidebarBackgroundColor = (hsl: string) => {
+    const parts = hsl.split(' ');
+    const h = parts[0];
+    const s = parseInt(parts[1].replace('%',''));
+    const l = parseInt(parts[2].replace('%',''));
+
+    // Create a darker, less saturated version for the background
+    const bgL = Math.max(10, l - 30);
+    const bgS = Math.max(10, s - 10);
+    
+    return `${h} ${bgS}% ${bgL}%`;
+}
+
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [primaryColor, setPrimaryColor] = useLocalStorage('theme-primary-color', '28 30% 50%');
     const [font, setFont] = useLocalStorage('theme-font', 'Literata');
@@ -41,14 +56,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const root = document.documentElement;
         const foregroundColor = getForegroundColor(primaryColor);
+        const sidebarBackgroundColor = getSidebarBackgroundColor(primaryColor);
+        const sidebarForegroundColor = getForegroundColor(sidebarBackgroundColor);
+
         
         root.style.setProperty('--primary', primaryColor);
         root.style.setProperty('--primary-foreground', foregroundColor);
         root.style.setProperty('--ring', primaryColor);
         
         // Also update sidebar-specific variables that depend on the primary color
+        root.style.setProperty('--sidebar-background', sidebarBackgroundColor);
+        root.style.setProperty('--sidebar-foreground', sidebarForegroundColor);
         root.style.setProperty('--sidebar-primary', primaryColor);
         root.style.setProperty('--sidebar-primary-foreground', foregroundColor);
+        root.style.setProperty('--sidebar-accent', primaryColor);
+        root.style.setProperty('--sidebar-accent-foreground', foregroundColor);
         root.style.setProperty('--sidebar-ring', primaryColor);
 
     }, [primaryColor]);
