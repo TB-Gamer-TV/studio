@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -22,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Plus, Minus, Trash2, BookText } from "lucide-react";
+import { Plus, Minus, Trash2, BookText, ArrowLeft } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -153,9 +154,17 @@ export default function CharacterSheetPage({ params: paramsProp }: { params: { i
 
   return (
     <div className="space-y-6">
-       <header className="space-y-1.5">
-          <h1 className="text-3xl font-bold font-headline">{character.name}'s Sheet</h1>
-          <p className="text-muted-foreground">Manage your character's stats, skills, and inventory.</p>
+       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className='space-y-1.5'>
+            <h1 className="text-3xl font-bold font-headline">{character.name}'s Sheet</h1>
+            <p className="text-muted-foreground">Manage your character's stats, skills, and inventory.</p>
+          </div>
+          <Link href="/" passHref>
+            <Button variant="outline">
+                <ArrowLeft className="mr-2" />
+                Back to Characters
+            </Button>
+        </Link>
         </header>
         <Separator />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
