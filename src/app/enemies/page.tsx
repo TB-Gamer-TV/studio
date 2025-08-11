@@ -128,20 +128,22 @@ export default function EnemyTrackerPage() {
                   </Button>
                 </div>
                 <Progress value={(enemy.hp / enemy.maxHp) * 100} />
-                 <div className="flex items-center gap-2">
+                 <div className="flex flex-wrap items-center gap-2">
                     <Input
                         type="number"
                         placeholder="Amount"
-                        className="h-9 text-center"
+                        className="h-9 text-center flex-grow min-w-[60px]"
                         value={damageValues[enemy.id] || ''}
                         onChange={(e) => handleDamageValueChange(enemy.id, e.target.value)}
                     />
-                    <Button variant="outline" size="sm" onClick={() => handleBulkHpChange(enemy.id, 'damage')}>
-                        <Shield className="mr-1 h-4 w-4"/> Damage
-                    </Button>
-                     <Button variant="outline" size="sm" onClick={() => handleBulkHpChange(enemy.id, 'heal')}>
-                        <Heart className="mr-1 h-4 w-4"/> Heal
-                    </Button>
+                    <div className="flex-grow flex gap-2">
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => handleBulkHpChange(enemy.id, 'damage')}>
+                          <Shield className="mr-1 h-4 w-4"/> Damage
+                      </Button>
+                       <Button variant="outline" size="sm" className="flex-1" onClick={() => handleBulkHpChange(enemy.id, 'heal')}>
+                          <Heart className="mr-1 h-4 w-4"/> Heal
+                      </Button>
+                    </div>
                 </div>
               </div>
             </CardContent>
