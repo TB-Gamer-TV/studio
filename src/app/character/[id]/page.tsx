@@ -57,20 +57,21 @@ type Currency = {
 
 export default function CharacterSheetPage({ params }: { params: { id: string } }) {
   const [characters, setCharacters] = useLocalStorage<Character[]>('characters', []);
-  
-  // Find the character directly. This is safer and avoids useEffect complexities.
-  const character = characters.find(c => c.id === params.id);
+  const [character, setCharacter] = useState<Character | null>(null);
 
-  // This effect will only handle showing notFound page if the character doesn't exist.
-  // It won't set the character state anymore.
   useEffect(() => {
-    // Wait until characters have been loaded from localStorage before deciding.
-    if (characters.length > 0 && !character) {
+    // Find the character from the list when characters are loaded or params.id changes.
+    const char = characters.find(c => c.id === params.id);
+    if (char) {
+      setCharacter(char);
+    } else if (characters.length > 0) {
+      // If characters are loaded but this one wasn't found, show 404.
       notFound();
     }
-  }, [characters, character]);
+  }, [characters, params.id]);
 
-  const setCharacter = (updatedCharacter: Character | null) => {
+
+  const updateCharacterState = (updatedCharacter: Character | null) => {
      if (updatedCharacter) {
        setCharacters(prev => 
          prev.map(c => c.id === params.id ? updatedCharacter : c)
@@ -81,7 +82,7 @@ export default function CharacterSheetPage({ params }: { params: { id: string } 
   const updateCharacter = (updatedInfo: Partial<Character>) => {
     if (character) {
       const updatedCharacter = { ...character, ...updatedInfo } as Character;
-      setCharacter(updatedCharacter);
+      updateCharacterState(updatedCharacter);
     }
   }
 
