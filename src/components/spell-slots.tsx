@@ -69,10 +69,11 @@ type SpellSlotsProps = {
   isWarlock?: boolean;
   characterClass: string;
   characterLevel: number;
+  characterId: string;
 };
 
-export function SpellSlots({ maxLevel, isWarlock = false, characterClass, characterLevel }: SpellSlotsProps) {
-  const [slots, setSlots] = useLocalStorage<SlotState>(`spell-slots-${characterClass}`,{});
+export function SpellSlots({ maxLevel, isWarlock = false, characterClass, characterLevel, characterId }: SpellSlotsProps) {
+  const [slots, setSlots] = useLocalStorage<SlotState>(`spell-slots-${characterId}`,{});
 
   useEffect(() => {
     const getInitialSlots = (): SlotState => {
@@ -113,6 +114,7 @@ export function SpellSlots({ maxLevel, isWarlock = false, characterClass, charac
     };
 
     setSlots(getInitialSlots());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [characterClass, characterLevel, isWarlock, maxLevel]);
 
 
