@@ -8,6 +8,8 @@ import { Separator } from "@/components/ui/separator"
 import { useTheme } from "@/components/theme-provider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Check } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { hexToHsl, hslToHex } from "@/lib/utils"
 
 const colors = [
     { name: 'Default Brown', value: '28 30% 50%' },
@@ -27,6 +29,16 @@ const fonts = [
 export default function SettingsPage() {
     const { primaryColor, setPrimaryColor, font, setFont } = useTheme();
 
+    // Check if the current primaryColor is one of the predefined colors
+    const isPresetColor = colors.some(c => c.value === primaryColor);
+
+    const handleCustomColorChange = (hex: string) => {
+        const hsl = hexToHsl(hex);
+        if (hsl) {
+            setPrimaryColor(hsl);
+        }
+    }
+
     return (
         <div className="space-y-6">
             <header className="space-y-1.5">
@@ -41,7 +53,12 @@ export default function SettingsPage() {
                         <CardDescription>Choose an accent color for the application.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <RadioGroup value={primaryColor} onValueChange={setPrimaryColor} className="space-y-2">
+                        <RadioGroup 
+                            // If a custom color is used, this value won't match any radio item
+                            value={isPresetColor ? primaryColor : ''} 
+                            onValueChange={setPrimaryColor} 
+                            className="space-y-2"
+                        >
                             {colors.map((color) => (
                                 <Label key={color.value} className="flex items-center gap-4 p-4 border rounded-lg cursor-pointer hover:bg-accent has-[:checked]:bg-accent has-[:checked]:text-accent-foreground">
                                     <div className="w-8 h-8 rounded-full" style={{ backgroundColor: `hsl(${color.value})` }} />
@@ -51,6 +68,24 @@ export default function SettingsPage() {
                                 </Label>
                             ))}
                         </RadioGroup>
+
+                        <Separator className="my-4" />
+
+                        <div className="space-y-2">
+                            <Label htmlFor="custom-color" className="font-medium">Custom Color</Label>
+                            <div className="flex items-center gap-4 p-4 border rounded-lg">
+                                <Input 
+                                    id="custom-color"
+                                    type="color"
+                                    value={hslToHex(primaryColor)}
+                                    onChange={(e) => handleCustomColorChange(e.target.value)}
+                                    className="w-12 h-10 p-1 cursor-pointer"
+                                    aria-label="Custom color picker"
+                                />
+                                <span className="text-sm text-muted-foreground">Select any color you'd like.</span>
+                            </div>
+                        </div>
+
                     </CardContent>
                 </Card>
                 <Card>
