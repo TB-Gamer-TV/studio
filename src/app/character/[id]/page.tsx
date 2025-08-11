@@ -57,26 +57,32 @@ type Currency = {
 
 export default function CharacterSheetPage({ params }: { params: { id: string } }) {
   const [characters, setCharacters] = useLocalStorage<Character[]>('characters', []);
-  const [character, setCharacter] = useState<Character | null>(null);
+  
+  // Find the character directly. This is safer and avoids useEffect complexities.
+  const character = characters.find(c => c.id === params.id);
 
+  // This effect will only handle showing notFound page if the character doesn't exist.
+  // It won't set the character state anymore.
   useEffect(() => {
-    const char = characters.find(c => c.id === params.id);
-    if (char) {
-      setCharacter(char);
-    } else if (characters.length > 0) {
-      // If the character is not found but other characters exist, it's a 404.
-      // The characters.length check prevents a 404 flash on initial load.
+    // Wait until characters have been loaded from localStorage before deciding.
+    if (characters.length > 0 && !character) {
       notFound();
     }
-  }, [params.id, characters]);
+  }, [characters, character]);
 
+  const setCharacter = (updatedCharacter: Character | null) => {
+     if (updatedCharacter) {
+       setCharacters(prev => 
+         prev.map(c => c.id === params.id ? updatedCharacter : c)
+       );
+     }
+  }
 
   const updateCharacter = (updatedInfo: Partial<Character>) => {
-    const updatedCharacter = { ...character, ...updatedInfo } as Character;
-    setCharacter(updatedCharacter);
-    setCharacters(prev => 
-      prev.map(c => c.id === params.id ? updatedCharacter : c)
-    );
+    if (character) {
+      const updatedCharacter = { ...character, ...updatedInfo } as Character;
+      setCharacter(updatedCharacter);
+    }
   }
 
   // State for the inventory item creation form
@@ -85,7 +91,7 @@ export default function CharacterSheetPage({ params }: { params: { id: string } 
   const [newItemDescription, setNewItemDescription] = useState("");
 
   if (!character) {
-    // Render a loading state or skeleton here
+    // This will be shown on initial render and if character is not found.
     return <div>Loading character...</div>;
   }
   
