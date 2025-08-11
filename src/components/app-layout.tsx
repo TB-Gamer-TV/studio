@@ -1,3 +1,4 @@
+
 'use client'
 
 import {
@@ -10,10 +11,11 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarInset,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Dices, ScrollText, Shield, UserCircle } from 'lucide-react';
+import { Dices, ScrollText, Shield, UserCircle, Settings } from 'lucide-react';
 import { Icons } from '@/components/icons';
 
 const navItems = [
@@ -51,6 +53,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             ))}
           </SidebarMenu>
         </SidebarContent>
+         <SidebarFooter>
+            <SidebarMenu>
+                 <SidebarMenuItem>
+                    <Link href="/settings">
+                        <SidebarMenuButton tooltip="Settings" isActive={pathname === '/settings'} asChild>
+                             <span>
+                                <Settings />
+                                <span>Settings</span>
+                            </span>
+                        </SidebarMenuButton>
+                    </Link>
+                 </SidebarMenuItem>
+            </SidebarMenu>
+        </SidebarFooter>
       </Sidebar>
       <SidebarInset>
         <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm md:hidden">
